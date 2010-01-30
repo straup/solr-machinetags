@@ -13,9 +13,9 @@ addressed including:
   the same multiValue bucket, the faceting doesn't behave the way you'd
   necessarily expect. For example, if you index the following...
 
-	solr.add([{·'id'·:·int(time.time()),·'body'·:·'float·thing',·'machinetag'·:·'dc:number=12345'·}])
-	solr.add([{·'id'·:·int(time.time()),·'body'·:·'decimal·thing',·'machinetag'·:·'dc:number=123.23'·}])
-	solr.add([{·'id'·:·int(time.time()),·'body'·:·'negative·thing',·'machinetag'·:·['dc:number=-45.23',·'asc:test=rara']·}])
+	solr.add([{ 'id' : int(time.time()), 'body'·:·'float·thing',·'machinetag'·:·'dc:number=12345'·}])
+	solr.add([{ 'id' : int(time.time()), 'body'·:·'decimal·thing',·'machinetag'·:·'dc:number=123.23'}])
+	solr.add([{ 'id' : int(time.time()), 'body'·:·'negative·thing',·'machinetag'·:·['dc:number=-45.23',·'asc:test=rara']·}])
 
   ...and then facet on the predicates for ?q=ns:dc you end up with...
 

@@ -39,12 +39,12 @@
 			</analyzer>
 		</fieldType>
 
-		<!-- this is the right one... -->
+		<!-- this is the right one, but for some reason the regex(p) below is still allow values of (not a number) to be indexed -->
 		<!-- <fieldType name="value_float" class="solr.TrieDoubleField" sortMissingLast="true" omitNorms="true"> -->
 
 		<fieldType name="value_float" class="solr.TextField" sortMissingLast="true" omitNorms="true">
 			<analyzer type="index">
-				<tokenizer class="solr.PatternTokenizerFactory" pattern="^(?:(?:[a-zA-Z]|\d)(?:\w+)?)\:(?:(?:[a-zA-Z]|\d)(?:\w+)?)=(-?\d+(?:\.\d+)?)" group="1" />
+				<tokenizer class="solr.PatternTokenizerFactory" pattern="^(?:(?:[a-zA-Z]|\d)(?:\w+)?)\:(?:(?:[a-zA-Z]|\d)(?:\w+)?)=(\-?\d+(?:\.\d+)?)" group="1" />
 			</analyzer>
 			<analyzer type="query">
 				<tokenizer class="solr.WhitespaceTokenizerFactory" />
