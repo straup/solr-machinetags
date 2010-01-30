@@ -1,0 +1,31 @@
+This is a simple Solr schema for indexing machine tags. You could use it by
+itself but it is here mostly as a reference and to be used as part of a larger
+project-specific schema.
+
+It basically works but there are still some known-knowns that need to be
+addressed including:
+
+* The indexer complains when the schema (correctly) defines the "value_float"
+  field as a double. I think this has something to do with the regular
+  expression.
+
+* Because all the values for a given namespace/predicate field get indexed in
+  the same multiValue bucket, the faceting doesn't behave the way you'd
+  necessarily expect. For example, if you index the following...
+
+	solr.add([{·'id'·:·int(time.time()),·'body'·:·'float·thing',·'machinetag'·:·'dc:number=12345'·}])
+	solr.add([{·'id'·:·int(time.time()),·'body'·:·'decimal·thing',·'machinetag'·:·'dc:number=123.23'·}])
+	solr.add([{·'id'·:·int(time.time()),·'body'·:·'negative·thing',·'machinetag'·:·['dc:number=-45.23',·'asc:test=rara']·}])
+
+  ...and then facet on the predicates for ?q=ns:dc you end up with...
+
+	"facet_fields":{
+		"ns":[
+			"asc",1,
+			"dc",1]},
+
+  ...which isn't really right, it is?
+
+* The regular expression for values does not account for strings wrapped in
+  quotes. I just haven't figured out how to escape it all in an XML attribute.
+

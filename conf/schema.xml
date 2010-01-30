@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="machinetags" version="1.1">
+
+	<types>
+		<fieldType name="uuid" class="solr.UUIDField" />
+
+		<fieldType name="machinetag" class="solr.TextField" sortMissingLast="true" omitNorms="true" />
+
+		<fieldType name="ns" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+			<analyzer type="index">
+				<tokenizer class="solr.PatternTokenizerFactory" pattern="^((?:[a-zA-Z]|\d)(?:\w+)?)\:(?:(?:[a-zA-Z]|\d)(?:\w+)?)=.+" group="1" />
+			</analyzer>
+			<analyzer type="query">
+				<tokenizer class="solr.WhitespaceTokenizerFactory" />
+				<filter class="solr.LowerCaseFilterFactory" />
+			</analyzer>
+		</fieldType>
+
+		<fieldType name="pred" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+			<analyzer type="index">
+				<tokenizer class="solr.PatternTokenizerFactory" pattern="^(?:(?:[a-zA-Z]|\d)(?:\w+)?)\:((?:[a-zA-Z]|\d)(?:\w+)?)=.+" group="1" />
+			</analyzer>
+			<analyzer type="query">
+				<tokenizer class="solr.WhitespaceTokenizerFactory" />
+				<filter class="solr.LowerCaseFilterFactory" />
+			</analyzer>
+		</fieldType>
+
+		<fieldType name="value" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+			<analyzer type="index">
+				<tokenizer class="solr.PatternTokenizerFactory" pattern="^(?:(?:[a-zA-Z]|\d)(?:\w+)?)\:(?:(?:[a-zA-Z]|\d)(?:\w+)?)=(.+)" group="1" />
+				<filter class="solr.TrimFilterFactory" />
+				<filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1" preserveOriginal="0" />
+			</analyzer>
+			<analyzer type="query">
+				<tokenizer class="solr.WhitespaceTokenizerFactory" />
+				<filter class="solr.LowerCaseFilterFactory" />
+			</analyzer>
+		</fieldType>
+
+		<!-- this is the right one... -->
+		<!-- <fieldType name="value_float" class="solr.TrieDoubleField" sortMissingLast="true" omitNorms="true"> -->
+
+		<fieldType name="value_float" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+			<analyzer type="index">
+				<tokenizer class="solr.PatternTokenizerFactory" pattern="^(?:(?:[a-zA-Z]|\d)(?:\w+)?)\:(?:(?:[a-zA-Z]|\d)(?:\w+)?)=(-?\d+(?:\.\d+)?)" group="1" />
+			</analyzer>
+			<analyzer type="query">
+				<tokenizer class="solr.WhitespaceTokenizerFactory" />
+			</analyzer>
+		</fieldType>
+	</types>
+
+	<fields>
+
+		<field name="id" type="uuid" stored="true" indexed="true" default="NEW" />
+		<field name="machinetag" type="machinetag" indexed="true" stored="true" multiValued="true"/>
+
+		<field name="ns" type="ns" indexed="true" stored="false" multiValued="true"/>
+		<field name="pred" type="pred" indexed="true" stored="false" multiValued="true"/>
+		<field name="value" type="value" indexed="true" stored="false" multiValued="true"/>
+		<field name="value_float" type="value_float" indexed="true" stored="false" multiValued="true"/>
+
+		<copyField source="machinetag" dest="ns" />
+		<copyField source="machinetag" dest="pred" />
+		<copyField source="machinetag" dest="value" />
+		<copyField source="machinetag" dest="value_float" />
+
+	</fields>
+
+	<uniqueKey>id</uniqueKey>
+	<defaultSearchField>value</defaultSearchField>
+	<solrQueryParser defaultOperator="OR"/>
+
+</schema>
